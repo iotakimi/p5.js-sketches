@@ -24,13 +24,23 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(img.width, img.height);
+  let canvasSize = min(windowWidth, img.width);
+  let scale = canvasSize / img.width;
+  createCanvas(img.width * scale, img.height * scale);
   noStroke();
-  // initialise smooth position at canvas centre
-  smoothX = img.width / 2;
-  smoothY = img.height / 2;
+  smoothX = (img.width * scale) / 2;
+  smoothY = (img.height * scale) / 2;
   buildDots();
 }
+
+function windowResized() {
+  let canvasSize = min(windowWidth, img.width);
+  let scale = canvasSize / img.width;
+  resizeCanvas(img.width * scale, img.height * scale);
+  smoothX = width / 2;
+  smoothY = height / 2;
+  buildDots();
+}     
 
 function buildDots() {
   dots = [];
