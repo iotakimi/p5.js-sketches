@@ -9,7 +9,110 @@
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
   <script>
-    // paste your full sketch here
+    let img;
+let dots = [];
+let SPACING;
+let DOT_SIZE = 2.5;
+let RADIUS = 120;
+let FORCE = 40;
+let smoothX, smoothY;
+let EASE = 0.2;
+
+function preload() {
+  img = loadImage('https://freight.cargo.site/t/thumbnail/w/200/q/75/i/a35dd3c6a78465aab15dcea99e2362855d44f3afa823add56db5199df209559b/kimi_logo_split.png');
+}
+
+function setup() {
+  createCanvas(img.width, img.height);
+  noStroke();
+  // initialise smooth position at canvas centre
+  smoothX = img.width / 2;
+  smoothY = img.height / 2;
+  buildDots();
+}
+
+function buildDots() {
+  dots = [];
+  SPACING = DOT_SIZE * 1 + 1.5;
+  img.loadPixels();
+  let cols = floor(width / SPACING);
+  let rows = floor(height / SPACING);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      let ox = c * SPACING + SPACING / 2;
+      let oy = r * SPACING + SPACING / 2;
+      let px = floor(ox / width * img.width);
+      let py = floor(oy / height * img.height);
+      let idx = (py * img.width + px) * 4;
+      let r_ = img.pixels[idx];
+      let g  = img.pixels[idx + 1];
+      let b  = img.pixels[idx + 2];
+      let a  = img.pixels[idx + 3];
+      if (a === 0) continue;
+      let col = color(r_, g, b, a);
+      dots.push({ ox, oy, x: ox, y: oy, col, vx: 0, vy: 0 });
+    }
+  }
+}
+
+function mousePressed() {
+  for (let d of dots) {
+    let dx = d.ox - mouseX;
+    let dy = d.oy - mouseY;
+    let dist = sqrt(dx * dx + dy * dy);
+    let angle = atan2(dy, dx);
+    let strength = map(dist, 0, width, 200, 20);
+    d.vx = cos(angle) * strength;
+    d.vy = sin(angle) * strength;
+  }
+}
+
+
+function draw() {
+  clear();
+
+  // smooth mouse position
+  smoothX = lerp(smoothX, mouseX, EASE);
+  smoothY = lerp(smoothY, mouseY, EASE);
+  
+    let t = frameCount * 0.008; // slow time value driving the idle
+
+  for (let d of dots) {
+    let dx = d.ox - smoothX;
+    let dy = d.oy - smoothY;
+    let dist = sqrt(dx * dx + dy * dy);
+
+    let currentSize = DOT_SIZE;
+    
+    // idle drift — unique per dot using origin as seed
+    let idleX = sin(t + d.ox * 0.02) * 2.0;
+    let idleY = cos(t + d.oy * 0.02) * 2.0;
+
+    if (dist < RADIUS && dist > 0) {
+      let t = 1 - dist / RADIUS;
+      let smooth = t * t * (3 - 2 * t);
+      let push = smooth * FORCE;
+      d.x = d.ox + (dx / dist) * push;
+      d.y = d.oy + (dy / dist) * push;
+      // grow dots to fill gaps caused by spreading
+      let spread = push / FORCE;
+      currentSize = DOT_SIZE + spread * (SPACING * 0.0);
+    } else {
+      // apply velocity then decay it
+      d.x += d.vx;
+      d.y += d.vy;
+      d.vx *= 0.3; // friction — lower = stops faster
+      d.vy *= 0.3;
+
+      // spring back to idle position
+      d.x += (d.ox + idleX - d.x) * 0.06;
+      d.y += (d.oy + idleY - d.y) * 0.06;
+    }
+
+    fill(d.col);
+    circle(d.x, d.y, currentSize);
+  }
+}
   </script>
 </body>
 </html>
