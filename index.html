@@ -10,7 +10,9 @@
 <body>
   <script src="https://freight.cargo.site/t/original/i/a35dd3c6a78465aab15dcea99e2362855d44f3afa823add56db5199df209559b/kimi_logo_split.png"></script>
   <script>
-    let img;
+
+     
+let img;
 let dots = [];
 let SPACING;
 let DOT_SIZE = 2.5;
@@ -20,30 +22,17 @@ let smoothX, smoothY;
 let EASE = 0.2;
 
 function preload() {
-  img = loadImage('https://freight.cargo.site/t/original/i/b6383eac6670a941114f8284bd13b7da0103fead8746c2ca50537f930ea82bb6/kimi_logo_3.png');
+  img = loadImage('https://freight.cargo.site/t/original/i/a35dd3c6a78465aab15dcea99e2362855d44f3afa823add56db5199df209559b/kimi_logo_split.png');
 }
 
 function setup() {
-  let canvasSize = min(windowWidth, img.width);
-  let scale = canvasSize / img.width;
-  let cnv = createCanvas(img.width * scale, img.height * scale);
-  cnv.position((windowWidth - width) / 2, (windowHeight - height) / 2);
+  createCanvas(img.width, img.height);
   noStroke();
-  smoothX = (img.width * scale) / 2;
-  smoothY = (img.height * scale) / 2;
+  // initialise smooth position at canvas centre
+  smoothX = img.width / 2;
+  smoothY = img.height / 2;
   buildDots();
 }
-
-function windowResized() {
-  let canvasSize = min(windowWidth, img.width);
-  let scale = canvasSize / img.width;
-  resizeCanvas(img.width * scale, img.height * scale);
-  let cnv = select('canvas');
-  cnv.position((windowWidth - width) / 2, 0);
-  smoothX = width / 2;
-  smoothY = height / 2;
-  buildDots();
-}     
 
 function buildDots() {
   dots = [];
