@@ -26,13 +26,22 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(img.width, img.height);
+let scale = windowWidth / img.width;
+  createCanvas(img.width * scale, img.height * scale);
   noStroke();
   // initialise smooth position at canvas centre
   smoothX = img.width / 2;
   smoothY = img.height / 2;
   buildDots();
 }
+
+function windowResized() {
+  let scale = windowWidth / img.width;
+  resizeCanvas(img.width * scale, img.height * scale);
+  smoothX = width / 2;
+  smoothY = height / 2;
+  buildDots();
+}     
 
 function buildDots() {
   dots = [];
