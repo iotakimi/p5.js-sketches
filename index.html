@@ -26,7 +26,8 @@ function preload() {
 function setup() {
   let canvasSize = min(windowWidth, img.width);
   let scale = canvasSize / img.width;
-  createCanvas(img.width * scale, img.height * scale);
+  let cnv = createCanvas(img.width * scale, img.height * scale);
+  cnv.position((windowWidth - width) / 2, (windowHeight - height) / 2);
   noStroke();
   smoothX = (img.width * scale) / 2;
   smoothY = (img.height * scale) / 2;
