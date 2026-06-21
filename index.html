@@ -38,6 +38,8 @@ function windowResized() {
   let canvasSize = min(windowWidth, img.width);
   let scale = canvasSize / img.width;
   resizeCanvas(img.width * scale, img.height * scale);
+  let cnv = select('canvas');
+  cnv.position((windowWidth - width) / 2, 0);
   smoothX = width / 2;
   smoothY = height / 2;
   buildDots();
