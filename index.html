@@ -26,7 +26,7 @@ function preload() {
 }
 
 function setup() {
-let scale = windowWidth / img.width;
+  let scale = min(windowWidth / img.width, windowHeight / img.height);
   createCanvas(img.width * scale, img.height * scale);
   noStroke();
   // initialise smooth position at canvas centre
@@ -36,7 +36,7 @@ let scale = windowWidth / img.width;
 }
 
 function windowResized() {
-  let scale = windowWidth / img.width;
+  let scale = min(windowWidth / img.width, windowHeight / img.height);
   resizeCanvas(img.width * scale, img.height * scale);
   smoothX = width / 2;
   smoothY = height / 2;
